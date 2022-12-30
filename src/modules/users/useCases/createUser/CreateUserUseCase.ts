@@ -1,4 +1,6 @@
-import { User } from "../../model/User";
+/* eslint-disable prettier/prettier */
+import { User } from "modules/users/model/User";
+
 import { IUsersRepository } from "../../repositories/IUsersRepository";
 
 interface IRequest {
@@ -7,11 +9,17 @@ interface IRequest {
 }
 
 class CreateUserUseCase {
-  constructor(private usersRepository: IUsersRepository) {}
+  constructor(private usersRepository: IUsersRepository) { }
 
   execute({ email, name }: IRequest): User {
-    // Complete aqui
+    const verifyEmail = this.usersRepository.findByEmail(email)
+    if(verifyEmail !== undefined) {
+      throw new Error("Email already exist")
+    }
+    const user = this.usersRepository.create({ name, email })
+    return user
   }
 }
 
 export { CreateUserUseCase };
+
